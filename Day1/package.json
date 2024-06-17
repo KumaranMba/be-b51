@@ -1,6 +1,7 @@
 {
   "name": "be-b51",
   "version": "1.0.0",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,11 +11,10 @@
     "type": "git",
     "url": "git+https://github.com/KumaranMba/be-b51.git"
   },
-  "author": "Dinesh",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/KumaranMba/be-b51/issues"
   },
-  "homepage": "https://github.com/KumaranMba/be-b51#readme",
-  "description": ""
+  "homepage": "https://github.com/KumaranMba/be-b51#readme"
 }
