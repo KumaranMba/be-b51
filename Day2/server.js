@@ -81,18 +81,34 @@ app.get('/api/notes/:id',(request,response) => {
 });
 
 // endpoint to create a new note based on the request data
-
 app.post('/api/notes',(request,response)=>{
     notes = notes.concat(request.body);
     response.status(201).json({message: 'note created successfully'});
 });
 
 
+//endpoint to  delete a note identified by id
+app.delete('/api/notes/:id',(request,response)=>{
+    // get the id from the params
+    const id = request.params.id;
+
+    // find the note matching with the id
+    const note = notes.find(note => note.id == id);
+
+    notes = notes.filter(note => note.id != id);
+
+    if(note){
+        response.status(204).json();
+    }else{
+        response.status(404).json({message:'id does not exists'});
+    }
+    
+});
+
+
 // define the server hostname and port number
 const HOSTNAME = "127.0.0.1";   // local host.
 const PORT = 3001;
-
-
 
 app.listen(PORT,()=>{
 
