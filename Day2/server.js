@@ -2,6 +2,11 @@
 const express = require('express');
 const app = express();
 
+// middleware - it is just a function, to handle request and response object 
+// Here we have used json parser
+app.use(express.json());
+
+
 /*
 endpoints
 
@@ -74,6 +79,14 @@ app.get('/api/notes/:id',(request,response) => {
 
     } 
 });
+
+// endpoint to create a new note based on the request data
+
+app.post('/api/notes',(request,response)=>{
+    notes = notes.concat(request.body);
+    response.status(201).json({message: 'note created successfully'});
+});
+
 
 // define the server hostname and port number
 const HOSTNAME = "127.0.0.1";   // local host.
