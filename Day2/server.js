@@ -1,7 +1,20 @@
 
 const express = require('express');
-const { request } = require('http');
 const app = express();
+
+/*
+endpoints
+
+   URL                   Request Type                Functionality
+
+  /api/notes              GET                      fetches all the notes
+  /api/notes/10           GET                      fetches a single note
+  /api/notes              POST                     Create a new notes based on the request data
+  /api/notes/10           DELETE                   deletes a note identified by id
+  /api/notes/10           PUT                      Replace the entire note identified by id with the request data
+  /api/notes/10           PATCH                    Replace a part of the note identified by id with the request data
+
+*/
 
 let notes = [
     {
@@ -33,6 +46,7 @@ let notes = [
 
 
 // set the endpoints
+
 //set the / route
 app.get('/',(request,response)=>{
     response.send("<h1>Note App</h1>");
@@ -41,6 +55,24 @@ app.get('/',(request,response)=>{
 //endpoints to view all the notes
 app.get('/api/notes',(request,response)=>{
     response.json(notes);
+});
+
+// endpoint to fetch a single note (Query params)
+app.get('/api/notes/:id',(request,response) => {
+
+    // get the id from the params
+    const id = request.params.id;
+
+    // find the note with the id in notes data 
+    const note = notes.find(note => note.id == id );
+
+    if(note) {
+        // if such an object with the id exists
+        response.status(200).json(note);
+    }else{
+        response.status(404).json({message:'id does not exists'});
+
+    } 
 });
 
 // define the server hostname and port number
