@@ -131,6 +131,32 @@ app.put('/api/notes/:id',(request,response)=> {
 
 });
 
+//Endpoint to patch a part of note identified by id with the request data
+
+app.patch('/api/notes/:id',(request,response)=> {
+
+    //get the id from the params
+    const id = request.params.id;
+
+    // get the note to replace from the user - request params
+    const noteToReplace = request.body;
+    console.log(noteToReplace);
+
+    // find the object matching the id
+    const note = notes.find(note => note.id == id);
+   
+
+    notes = notes.map(note => note.id == id ? {...note,...noteToReplace} : note);
+    
+    if(note){
+        response.status(200).json({message: 'note patched'});
+    }else{
+        response.status(404).json({message: 'id does not exists'});
+    }
+
+
+});
+
 
 // define the server hostname and port number
 const HOSTNAME = "127.0.0.1";   // local host.
