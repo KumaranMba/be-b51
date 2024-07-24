@@ -1,6 +1,5 @@
 // import the module
-const http = require("http");
-
+const http = require('http');
 
 let notes = [
     {
@@ -18,39 +17,25 @@ let notes = [
         content:"simple web server using node.js",
         important:true
     },
-    {
-        id:4,
-        content:"express makes backend restful painless",
-        important:true
-    },
-    {
-        id:5,
-        content:"backend restful using nodejs will grow complex",
-        important: false
-
-    }
 ]
 
 
-// Define the server hostname and portnumber
+// create a server
+const server = http.createServer((req,res)=>{
 
-const hostname = "127.0.0.1"; // local host
+    res.statusCode = 200;
+    res.setHeader('Content-Type','Application/json');
+    res.end(JSON.stringify(notes));
 
+});
+
+// define the server hostname and port number
+const hostname = "127.0.0.1";   // local host.
 const port = 3001;
 
+// make the server to listen to the defined portnumber
 
-
-const server = http.createServer((req,res)=>{
-    
-    res.statusCode = 200;
-    res.setHeader('Content-Type',"Application/Json");
-    res.end(JSON.stringify(notes));
-});
-
-// Make the server to listen to the defined portnumber:
 server.listen(port,hostname,()=>{
-    console.log(`server running at http://${hostname}:${port}`);
+
+    console.log(`Server running at http://${hostname}:${port}`);
 });
-
-
-
