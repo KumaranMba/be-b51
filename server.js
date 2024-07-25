@@ -1,41 +1,34 @@
-// import the module
-const http = require('http');
+const express = require('express');
+const app = express();
 
-let notes = [
-    {
-        id:1,
-        content:"backend using node.js",
-        important:true
-    },
-    {
-        id:2,
-        content:"node.js is a open source",
-        important:false
-    },
-    {
-        id:3,
-        content:"simple web server using node.js",
-        important:true
-    },
-]
+// let notes = [
+//     {
+//         id:1,
+//         content:"backend using node.js",
+//         important:true
+//     },
+//     {
+//         id:2,
+//         content:"node.js is a open source",
+//         important:false
+//     },
+//     {
+//         id:3,
+//         content:"simple web server using node.js",
+//         important:true
+//     },
+// ]
 
 
-// create a server
-const server = http.createServer((req,res)=>{
-
-    res.statusCode = 200;
-    res.setHeader('Content-Type','Application/json');
-    res.end(JSON.stringify(notes));
-
+app.get('/',(request,response)=>{
+   response.send("Hello World");
 });
 
-// define the server hostname and port number
-const hostname = "127.0.0.1";   // local host.
-const port = 3001;
 
-// make the server to listen to the defined portnumber
+const HOSTNAME = "127.0.0.1";   // local host.
+const PORT = 3001;
 
-server.listen(port,hostname,()=>{
+app.listen(PORT,HOSTNAME,()=>{
 
-    console.log(`Server running at http://${hostname}:${port}`);
+    console.log(`Server running at http://${HOSTNAME}:${PORT}`);
 });
