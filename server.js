@@ -1,28 +1,35 @@
 const express = require('express');
 const app = express();
 
-// let notes = [
-//     {
-//         id:1,
-//         content:"backend using node.js",
-//         important:true
-//     },
-//     {
-//         id:2,
-//         content:"node.js is a open source",
-//         important:false
-//     },
-//     {
-//         id:3,
-//         content:"simple web server using node.js",
-//         important:true
-//     },
-// ]
+let notes = [
+    {
+        id:1,
+        content:"backend using node.js",
+        important:true
+    },
+    {
+        id:2,
+        content:"node.js is a open source",
+        important:false
+    },
+    {
+        id:3,
+        content:"simple web server using node.js",
+        important:true
+    },
+]
 
-
+// set the endpoints
+// set the / route
 app.get('/',(request,response)=>{
-   response.send("Hello World");
+   response.send(`<h1>By using HTML h1 tag</h1>`);
 });
+
+// to view all the notes
+app.get('/api/notes',(request,response)=>{
+    response.json(notes);
+});
+
 
 
 const HOSTNAME = "127.0.0.1";   // local host.
