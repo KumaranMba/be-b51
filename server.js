@@ -22,15 +22,13 @@ let notes = [
 // set the endpoints
 // set the / route
 app.get('/',(request,response)=>{
-   response.send(`<h1>By using HTML h1 tag</h1>`);
+   response.send("Hello World");
 });
 
 // to view all the notes
 app.get('/api/notes',(request,response)=>{
     response.json(notes);
 });
-
-
 
 const HOSTNAME = "127.0.0.1";   // local host.
 const PORT = 3001;
