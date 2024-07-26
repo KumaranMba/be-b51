@@ -30,6 +30,22 @@ app.get('/api/notes',(request,response)=>{
     response.json(notes);
 });
 
+//endpoint to fetch a single note
+app.get("/api/note/:id",(request,response)=>{
+
+    const id = request.params.id;
+
+    const note = notes.find(note => note.id == id);
+
+    if(note){
+        response.status(200).json(note);
+    }
+    else{
+        response.status(404).json({Message:"Such id does not exit"});
+    }
+
+});
+
 const HOSTNAME = "127.0.0.1";   // local host.
 const PORT = 3001;
 
