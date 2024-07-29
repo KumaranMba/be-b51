@@ -74,6 +74,33 @@ app.delete('/api/note/:id',(request,response)=>{
     }
 });
 
+//endpoint to replace the entire note identified by the id with the request data
+
+app.put('/api/notes/:id',(request,response)=>{
+
+    //identify the id with the request data
+    const id = request.params.id;
+
+    // To get the data from the request
+    const noteToReplace = request.body;
+    
+    // find the object matching with the id;
+    const note = notes.find(note => note.id == id);
+
+     notes = notes.map(note=> note.id == id ? noteToReplace : note);
+
+     if(note){
+        response.status(200).json({message:"notes replaced"});
+     }else{
+        response.status(404).json({message:"id does not exists"});
+     }
+
+});
+
+
+
+
+
 const HOSTNAME = "127.0.0.1";   // local host.
 const PORT = 3001;
 
