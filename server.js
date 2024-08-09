@@ -1,27 +1,33 @@
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+
 
 // middleware
 app.use(express.json());
 
-let notes = [
-    {
-        id:1,
-        content:"backend using node.js",
-        important:true
-    },
-    {
-        id:2,
-        content:"node.js is a open source",
-        important:false
-    },
-    {
-        id:3,
-        content:"simple web server using node.js",
-        important:true
-    },
-]
 
+// connect to the database
+const url = `mongodb+srv://kumarandinesh0411:Dinesh0411@dineshclust.6e3d5la.mongodb.net/B51DB`;
+
+mongoose.connect(url)
+ .then(() =>{
+        console.log("Connected to MongoDB...");
+ } )
+ .catch((err)=>{
+    console.error(err);
+ });
+ 
+ // create a schema
+ const noteSchema = new mongoose.Schema({
+    id:Number,
+    content: String,
+    important:Boolean
+ });
+
+ // create a model
+ const Note = mongoose.model("Note",noteSchema,"notes");
+ 
 // set the endpoints
 // set the / route
 app.get('/',(request,response)=>{
@@ -30,96 +36,99 @@ app.get('/',(request,response)=>{
 
 // to view all the notes
 app.get('/api/notes',(request,response)=>{
-    response.json(notes);
-});
-
-//endpoint to fetch a single note
-app.get("/api/note/:id",(request,response)=>{
-
-    const id = request.params.id;
-
-    const note = notes.find(note => note.id == id);
-
-    if(note){
+    Note.find({},{})
+    .then( note => {
         response.status(200).json(note);
-    }
-    else{
-        response.status(404).json({Message:"Such id does not exit"});
-    }
-
+    });
 });
 
-// endpoint to create a new note based on the request data
+// //endpoint to fetch a single note
+// app.get("/api/note/:id",(request,response)=>{
 
-app.post('/api/notes', (request,response)=>{
-   notes = notes.concat(request.body);
-    response.status(201).json({message:"notes created successfully"});
-});
+//     const id = request.params.id;
 
-//endpoint to delete a single note from existing notes
+//     const note = notes.find(note => note.id == id);
 
-app.delete('/api/note/:id',(request,response)=>{
-    // identify the id with the help of request
-    const id = request.params.id;
+//     if(note){
+//         response.status(200).json(note);
+//     }
+//     else{
+//         response.status(404).json({Message:"Such id does not exit"});
+//     }
 
-    // find the specific notes
-    const note = notes.find(note => note.id == id);
+// });
 
-    notes = notes.filter(note => note.id != id);
+// // endpoint to create a new note based on the request data
 
-    if(note){
-        response.status(200).json(note);
-    }else{
-        response.status(404).json({message:"id does not exists"});
-    }
-});
+// app.post('/api/notes', (request,response)=>{
+//    notes = notes.concat(request.body);
+//     response.status(201).json({message:"notes created successfully"});
+// });
 
-//endpoint to replace the entire note identified by the id with the request data
+// //endpoint to delete a single note from existing notes
 
-app.put('/api/notes/:id',(request,response)=>{
+// app.delete('/api/note/:id',(request,response)=>{
+//     // identify the id with the help of request
+//     const id = request.params.id;
 
-    //identify the id with the request data
-    const id = request.params.id;
+//     // find the specific notes
+//     const note = notes.find(note => note.id == id);
 
-    // To get the data from the request
-    const noteToReplace = request.body;
+//     notes = notes.filter(note => note.id != id);
+
+//     if(note){
+//         response.status(200).json(note);
+//     }else{
+//         response.status(404).json({message:"id does not exists"});
+//     }
+// });
+
+// //endpoint to replace the entire note identified by the id with the request data
+
+// app.put('/api/notes/:id',(request,response)=>{
+
+//     //identify the id with the request data
+//     const id = request.params.id;
+
+//     // To get the data from the request
+//     const noteToReplace = request.body;
     
-    // find the object matching with the id;
-    const note = notes.find(note => note.id == id);
+//     // find the object matching with the id;
+//     const note = notes.find(note => note.id == id);
 
-     notes = notes.map(note=> note.id == id ? noteToReplace : note);
+//      notes = notes.map(note=> note.id == id ? noteToReplace : note);
 
-     if(note){
-        response.status(200).json({message:"notes replaced"});
-     }else{
-        response.status(404).json({message:"id does not exists"});
-     }
+//      if(note){
+//         response.status(200).json({message:"notes replaced"});
+//      }else{
+//         response.status(404).json({message:"id does not exists"});
+//      }
 
-});
+// });
 
 
-//endpoint to path the specific content by identifying the id with the request data
+// //endpoint to path the specific content by identifying the id with the request data
 
-app.patch('/api/notes/:id',(request,response)=>{
+// app.patch('/api/notes/:id',(request,response)=>{
 
-    //identify the id with the request data
-    const id = request.params.id;
+//     //identify the id with the request data
+//     const id = request.params.id;
 
-    // To get the data from the request
-    const noteToReplace = request.body;
+//     // To get the data from the request
+//     const noteToReplace = request.body;
     
-    // find the object matching with the id;
-    const note = notes.find(note => note.id == id);
+//     // find the object matching with the id;
+//     const note = notes.find(note => note.id == id);
 
-     notes = notes.map(note=> note.id == id ? {...note,...noteToReplace} : note);
+//      notes = notes.map(note=> note.id == id ? {...note,...noteToReplace} : note);
 
-     if(note){
-        response.status(200).json({message:"notes patched Successfully"});
-     }else{
-        response.status(404).json({message:"id does not exists"});
-     }
+//      if(note){
+//         response.status(200).json({message:"notes patched Successfully"});
+//      }else{
+//         response.status(404).json({message:"id does not exists"});
+//      }
 
-});
+// });
 
 
 const HOSTNAME = "127.0.0.1";   // local host.
