@@ -1,140 +1,145 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const config = require('./utilits/config');
+const {info,error} = require('./utilits/logger');
+const cros = require('cros');
 
 
 // middleware
 app.use(express.json());
+app.use(cros());
 
+// for console.log()
+info(config);
+
+info(`connecting to`,config.MONGODB_URI);
 
 // connect to the database
-const url = `mongodb+srv://kumarandinesh0411:Dinesh0411@dineshclust.6e3d5la.mongodb.net/B51DB`;
+mongoose.connect(config.MONGODB_URI)
+    .then(() => {
+        info('Connected to MongoDB...');
+    })
+    .catch((err) => {
+        error('Error connecting to MongoDB:',err);
+    });
 
-mongoose.connect(url)
- .then(() =>{
-        console.log("Connected to MongoDB...");
- } )
- .catch((err)=>{
-    console.error(err);
- });
- 
- // create a schema
- const noteSchema = new mongoose.Schema({
-    id:Number,
-    content: String,
-    important:Boolean
- });
+    /*
+    endpoints
 
- // create a model
- const Note = mongoose.model("Note",noteSchema,"notes");
- 
+    URL             Request Type        Functionality
+    /api/notes      GET                 fetches all the notes
+    /api/notes/10   GET                 fetches a single note
+    /api/notes      POST                creates a new note based on the request data
+    /api/notes/10   DELETE              deletes a note identified by id
+    /api/notes/10   PUT                 replaces the entire note identified by id with the request data
+    /api/notes/10   PATCH               replaces a part of the note identified by id with the request data
+*/
+
 // set the endpoints
 // set the / route
-app.get('/',(request,response)=>{
-   response.send("Hello World");
+app.get('/', (request, response) => {
+    response.send('<h1>Notes App</h1>');
 });
 
-// to view all the notes
-app.get('/api/notes',(request,response)=>{
-    Note.find({},{})
-    .then( note => {
-        response.status(200).json(note);
-    });
+// define a schema
+const noteSchema = new mongoose.Schema({
+    id: Number,
+    content: String,
+    important: Boolean
 });
 
-// //endpoint to fetch a single note
-// app.get("/api/note/:id",(request,response)=>{
+// create a model
+const Note = mongoose.model('Note', noteSchema, 'notes');
 
+// endpoint to view all the notes
+app.get('/api/notes', (request, response) => {
+    Note.find({}, {})
+        .then(notes => {
+            response.status(200).json(notes);
+        });
+});
+
+// // endpoint to fetch a single note
+// app.get('/api/notes/:id', (request, response) => {
+//     // get the id from the params
 //     const id = request.params.id;
 
+//     // find the note with the id in notes data
 //     const note = notes.find(note => note.id == id);
 
-//     if(note){
+//     if (note) {
+//         // if such an object with the id exists
 //         response.status(200).json(note);
+//     } else {
+//         response.status(404).json({ message: 'id does not exists' });
 //     }
-//     else{
-//         response.status(404).json({Message:"Such id does not exit"});
-//     }
-
 // });
 
-// // endpoint to create a new note based on the request data
-
-// app.post('/api/notes', (request,response)=>{
-//    notes = notes.concat(request.body);
-//     response.status(201).json({message:"notes created successfully"});
-// });
-
-// //endpoint to delete a single note from existing notes
-
-// app.delete('/api/note/:id',(request,response)=>{
-//     // identify the id with the help of request
+// // endpoint to delete a note identified by id
+// app.delete('/api/notes/:id', (request, response) => {
+//     // get the id from the params
 //     const id = request.params.id;
 
-//     // find the specific notes
+//     // find the note matching the id
 //     const note = notes.find(note => note.id == id);
 
 //     notes = notes.filter(note => note.id != id);
 
-//     if(note){
-//         response.status(200).json(note);
-//     }else{
-//         response.status(404).json({message:"id does not exists"});
+//     if (note) {
+//         response.status(204).json(note);
+//     } else {
+//         response.status(404).json({ message: 'id does not exists' });
 //     }
 // });
 
-// //endpoint to replace the entire note identified by the id with the request data
-
-// app.put('/api/notes/:id',(request,response)=>{
-
-//     //identify the id with the request data
-//     const id = request.params.id;
-
-//     // To get the data from the request
-//     const noteToReplace = request.body;
-    
-//     // find the object matching with the id;
-//     const note = notes.find(note => note.id == id);
-
-//      notes = notes.map(note=> note.id == id ? noteToReplace : note);
-
-//      if(note){
-//         response.status(200).json({message:"notes replaced"});
-//      }else{
-//         response.status(404).json({message:"id does not exists"});
-//      }
-
+// // endpoint to create a new note based on the request data
+// app.post('/api/notes', (request, response) => {
+//     notes = notes.concat(request.body);
+//     response.status(201).json({ message: 'note created successfully' });
 // });
 
-
-// //endpoint to path the specific content by identifying the id with the request data
-
-// app.patch('/api/notes/:id',(request,response)=>{
-
-//     //identify the id with the request data
+// // endpoint to replace the entire note identified by id with the request data
+// app.put('/api/notes/:id', (request, response) => {
+//     // get the id from the params
 //     const id = request.params.id;
 
-//     // To get the data from the request
+//     // get the note to replace from the user - request body
 //     const noteToReplace = request.body;
-    
-//     // find the object matching with the id;
+
+//     // find the object matching the id
 //     const note = notes.find(note => note.id == id);
 
-//      notes = notes.map(note=> note.id == id ? {...note,...noteToReplace} : note);
+//     notes = notes.map(note => note.id == id ? noteToReplace : note);
 
-//      if(note){
-//         response.status(200).json({message:"notes patched Successfully"});
-//      }else{
-//         response.status(404).json({message:"id does not exists"});
-//      }
-
+//     if (note) {
+//         response.status(200).json({ message: 'note replaced' });
+//     } else {
+//         response.status(404).json({ message: 'id does not exists' });
+//     }
 // });
 
+// // endpoint to patch a part of note identified by id with the request data
+// app.patch('/api/notes/:id', (request, response) => {
+//     // get the id from the params
+//     const id = request.params.id;
 
-const HOSTNAME = "127.0.0.1";   // local host.
-const PORT = 3001;
+//     // get the note to replace from the user - request body
+//     const noteToReplace = request.body;
 
-app.listen(PORT,HOSTNAME,()=>{
+//     // find the object matching the id
+//     const note = notes.find(note => note.id == id);
 
-    console.log(`Server running at http://${HOSTNAME}:${PORT}`);
+//     notes = notes.map(note => note.id == id ? {...note, ...noteToReplace} : note);
+
+//     if (note) {
+//         response.status(200).json({ message: 'note patched' });
+//     } else {
+//         response.status(404).json({ message: 'id does not exists' });
+//     }
+// });
+
+// make the server to listen to the defined portnumber
+app.listen(config.PORT, () => {
+    info(`Server running on port ${config.PORT}`);
 });
