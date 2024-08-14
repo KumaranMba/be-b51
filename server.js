@@ -2,26 +2,26 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const config = require('./utilits/config');
-const {info,error} = require('./utilits/logger');
-const cros = require('cros');
+const logger = require('./utilits/logger');
+const cors = require('cors');
+const notesRouter = require('./controller/notes');
 
+
+mongoose.set('strictQuery',false);
 
 // middleware
 app.use(express.json());
-app.use(cros());
+app.use(cors());
 
-// for console.log()
-info(config);
-
-info(`connecting to`,config.MONGODB_URI);
+ logger.info(`connecting to`,config.MONGODB_URI);
 
 // connect to the database
 mongoose.connect(config.MONGODB_URI)
     .then(() => {
-        info('Connected to MongoDB...');
+     logger.info('Connected to MongoDB...');
     })
     .catch((err) => {
-        error('Error connecting to MongoDB:',err);
+        logger.error('Error connecting to MongoDB:',err);
     });
 
     /*
@@ -42,24 +42,8 @@ app.get('/', (request, response) => {
     response.send('<h1>Notes App</h1>');
 });
 
-// define a schema
-const noteSchema = new mongoose.Schema({
-    id: Number,
-    content: String,
-    important: Boolean
-});
 
-// create a model
-const Note = mongoose.model('Note', noteSchema, 'notes');
-
-// endpoint to view all the notes
-app.get('/api/notes', (request, response) => {
-    Note.find({}, {})
-        .then(notes => {
-            response.status(200).json(notes);
-        });
-});
-
+// app.use('/api/notes',notesRouter);
 // // endpoint to fetch a single note
 // app.get('/api/notes/:id', (request, response) => {
 //     // get the id from the params
@@ -139,7 +123,7 @@ app.get('/api/notes', (request, response) => {
 //     }
 // });
 
-// make the server to listen to the defined portnumber
-app.listen(config.PORT, () => {
-    info(`Server running on port ${config.PORT}`);
-});
+
+app.use('/api/notes',notesRouter);
+
+module.exports = app;
