@@ -126,7 +126,7 @@ app.get('/', (request, response) => {
 
 
 app.use('/api/notes',notesRouter);
-app.use('/users',usersRouter);
+app.use('/api/users',usersRouter);
 
 module.exports = app;
 

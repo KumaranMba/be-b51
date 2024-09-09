@@ -2,17 +2,19 @@ const usersRouter = require('express').Router();
 
 const User = require('../models/user');
 
+
 // endpoint to view all the notes
 usersRouter.get('/', (request, response) => {
   User.find({}, {})
-        .then(users => {
-            response.status(200).json(users);
+        .then(user => {
+            response.status(200).json(user);
         });
 });
 
 // endpoint to create a new resource based on the request data
 usersRouter.post('/',(request,response) => {
-    const user = new User(response.body);
+    const user = new User(request.body);
+   
     user.save()
        .then(()=>{
         response.status(201).json({message:'user created successfully'});

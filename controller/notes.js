@@ -12,7 +12,7 @@ notesRouter.get('/', (request, response) => {
 
 // endpoint to create a new resource based on the request data
 notesRouter.post('/',(request,response) => {
-    const note = new Note(response.body);
+    const note = new Note(request.body);
     note.save()
        .then(()=>{
         response.status(201).json({message:'note created successfully'});
