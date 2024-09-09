@@ -1,32 +1,32 @@
-const notesRouter = require('express').Router();
+const usersRouter = require('express').Router();
 
-const Note = require('../models/note');
+const User = require('../models/user');
 
 // endpoint to view all the notes
-notesRouter.get('/', (request, response) => {
-  Note.find({}, {})
-        .then(notes => {
-            response.status(200).json(notes);
+usersRouter.get('/', (request, response) => {
+  User.find({}, {})
+        .then(users => {
+            response.status(200).json(users);
         });
 });
 
 // endpoint to create a new resource based on the request data
-notesRouter.post('/',(request,response) => {
-    const note = new Note(response.body);
-    note.save()
+usersRouter.post('/',(request,response) => {
+    const user = new User(response.body);
+    user.save()
        .then(()=>{
-        response.status(201).json({message:'note created successfully'});
+        response.status(201).json({message:'user created successfully'});
        });
 });
 
 
 //endpoint to fetch a single resource based on it
-notesRouter.get('/:id',(request,response)=>{
+usersRouter.get('/:id',(request,response)=>{
     const id = request.params.id;
 
-    Note.findById(id)
-      .then(note=>{
-        response.status(200).json(note);
+    User.findById(id)
+      .then(user=>{
+        response.status(200).json(user);
       })
       .catch(err =>{
         response.status(400).json({message: 'id does not exists'});
@@ -36,10 +36,10 @@ notesRouter.get('/:id',(request,response)=>{
 
 // deletes a single resources based on id
 
-notesRouter.delete('/:id',(request,response)=>{
+usersRouter.delete('/:id',(request,response)=>{
     const id = request.params.id;
 
-    Note.findByIdAndDelete(id)
+    User.findByIdAndDelete(id)
          .then(deletedNote =>{
                 if(deletedNote){
                     response.status(200).json({message:'note deleted successfully'});
@@ -53,12 +53,12 @@ notesRouter.delete('/:id',(request,response)=>{
 });
 
 // replaceing the entire note object identified by an id
-notesRouter.put('./:id',(request,response)=>{
+usersRouter.put('./:id',(request,response)=>{
     const id = request.params.id;
     
-    const noteToReplace = request.body;
+    const userToReplace = request.body;
 
-    Note.findByIdAndUpdate(id,noteToReplace)
+    Note.findByIdAndUpdate(id,userToReplace)
        .then(updateNote=>{
         if(updateNote){
             response.status(200).json({message:'note replaced successfully'});
@@ -72,12 +72,12 @@ notesRouter.put('./:id',(request,response)=>{
 });
 
 // replaceing the entire note object identified by an id
-notesRouter.patch('./:id',(request,response)=>{
+usersRouter.patch('./:id',(request,response)=>{
     const id = request.params.id;
     
     const noteToPatch = request.body;
 
-    Note.findByIdAndUpdate(id,noteToPatch)
+    User.findByIdAndUpdate(id,noteToPatch)
        .then(updateNote=>{
         if(updateNote){
             response.status(200).json({message:'note to Patched successfully'});
@@ -91,4 +91,4 @@ notesRouter.patch('./:id',(request,response)=>{
 });
 
 
-module.exports = notesRouter;
+module.exports = usersRouter;

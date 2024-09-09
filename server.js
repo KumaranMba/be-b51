@@ -5,6 +5,7 @@ const config = require('./utilits/config');
 const logger = require('./utilits/logger');
 const cors = require('cors');
 const notesRouter = require('./controller/notes');
+const usersRouter = require('./controller/users');
 
 
 mongoose.set('strictQuery',false);
@@ -125,5 +126,7 @@ app.get('/', (request, response) => {
 
 
 app.use('/api/notes',notesRouter);
+app.use('/users',usersRouter);
 
 module.exports = app;
+
